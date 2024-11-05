@@ -1,0 +1,45 @@
+Do this in command prompt after intalling mongo db 
+
+to start
+ mongosh
+
+use myDatabase
+
+
+db.myCollection.insertMany([
+  {name: "Bob", age: 30, city: "Chicago"},
+  {name: "Charlie", age: 28, city: "Los Angeles"}
+])
+
+db.myCollection.find()
+
+db.myCollection.find({age: 25})
+
+db.myCollection.findOne({name: "Alice"})
+
+db.myCollection.find({ $or: [{name: "Alice"}, {city: "Chicago"}] })
+
+db.myCollection.find({ $and: [{age: {$gt: 20}}, {city: "New York"}] })
+
+db.myCollection.find({name: {$in: ["Alice", "Bob"]}})
+
+
+
+db.myCollection.updateOne(
+  { name: "Alice" },                   // Filter to find the document
+  { $set: { age: 26 } }                // Update fields
+)
+
+
+db.myCollection.deleteOne({name: "Alice"})
+
+
+db.myCollection.find()
+
+
+db.myCollection.drop()
+
+
+
+
+

@@ -1,0 +1,177 @@
+you need python and MySQL for this also the command line client interface of my sql 
+also u will need mysql connector because it is a database connectivity program this is required for connecting to the database server!!
+It can be downloaded from chrome!!!
+
+code:::
+
+
+*****************************************************************************************
+
+import mysql.connector
+from mysql.connector import Error
+
+
+# Function to create a connection to the database
+def create_connection():
+    connection = None
+    try:
+        connection = mysql.connector.connect(
+            host='localhost',
+            user='root',  # replace with your MySQL username
+            password='root',  # replace with your MySQL password
+            database='student_management'
+        )
+        if connection.is_connected():
+            print("Connected to MySQL database")
+    except Error as e:
+        print(f"The error '{e}' occurred while connecting to the database")
+    return connection
+
+
+# Function to add a student
+def add_student(connection, roll_no, name, dept):
+    cursor = connection.cursor()
+    query = "INSERT INTO students (stud_rollNo, stud_name, stud_dept) VALUES (%s, %s, %s)"
+    values = (roll_no, name, dept)
+    try:
+        cursor.execute(query, values)
+        connection.commit()
+        print(f"Student '{name}' added successfully with roll number {roll_no}.")
+    except Error as e:
+        print(f"The error '{e}' occurred while adding the student.")
+    finally:
+        cursor.close()
+
+
+# Function to get all students
+def get_all_students(connection):
+    cursor = connection.cursor()
+    try:
+        cursor.execute("SELECT * FROM students")
+        result = cursor.fetchall()
+        if result:
+            print("\nAll Students:")
+            for row in result:
+                print(f"Roll No: {row[0]}, Name: {row[1]}, Department: {row[2]}")
+        else:
+            print("No students found in the database.")
+    except Error as e:
+        print(f"The error '{e}' occurred while fetching students.")
+    finally:
+        cursor.close()
+
+
+# Function to update a student's details
+def edit_student(connection, roll_no, name, dept):
+    cursor = connection.cursor()
+    query = "UPDATE students SET stud_name = %s, stud_dept = %s WHERE stud_rollNo = %s"
+    values = (name, dept, roll_no)
+    try:
+        cursor.execute(query, values)
+        connection.commit()
+        if cursor.rowcount > 0:
+            print(f"Student with roll number {roll_no} updated successfully.")
+        else:
+            print(f"No student found with roll number {roll_no}. Update failed.")
+    except Error as e:
+        print(f"The error '{e}' occurred while updating the student.")
+    finally:
+        cursor.close()
+
+
+# Function to delete a student
+def delete_student(connection, roll_no):
+    cursor = connection.cursor()
+    query = "DELETE FROM students WHERE stud_rollNo = %s"
+    try:
+        cursor.execute(query, (roll_no,))
+        connection.commit()
+        if cursor.rowcount > 0:
+            print(f"Student with roll number {roll_no} deleted successfully.")
+        else:
+            print(f"No student found with roll number {roll_no}. Deletion failed.")
+    except Error as e:
+        print(f"The error '{e}' occurred while deleting the student.")
+    finally:
+        cursor.close()
+
+
+# Main function with a user-friendly menu for CRUD operations
+def main():
+    conn = create_connection()
+    if not conn:
+        print("Failed to connect to the database. Exiting...")
+        return
+
+    while True:
+        print("\n--- Student Management System ---")
+        print("Please choose an option:")
+        print("1. Add a new student")
+        print("2. View all students")
+        print("3. Edit a student's details")
+        print("4. Delete a student")
+        print("5. Exit")
+
+        choice = input("Enter your choice (1-5): ")
+
+        if choice == "1":
+            # Add a new student
+            roll_no = int(input("Enter roll number: "))
+            name = input("Enter name: ")
+            dept = input("Enter department: ")
+            add_student(conn, roll_no, name, dept)
+            input("Press Enter to continue...")  # Prompt to continue after adding
+
+        elif choice == "2":
+            # View all students
+            get_all_students(conn)
+            input("Press Enter to continue...")  # Prompt to continue after viewing
+
+        elif choice == "3":
+            # Edit a student's details
+            roll_no = int(input("Enter roll number of the student to edit: "))
+            name = input("Enter new name: ")
+            dept = input("Enter new department: ")
+            edit_student(conn, roll_no, name, dept)
+            input("Press Enter to continue...")  # Prompt to continue after editing
+
+        elif choice == "4":
+            # Delete a student
+            roll_no = int(input("Enter roll number of the student to delete: "))
+            delete_student(conn, roll_no)
+            input("Press Enter to continue...")  # Prompt to continue after deleting
+
+        elif choice == "5":
+            # Exit
+            print("Exiting the Student Management System.")
+            break
+
+        else:
+            print("Invalid choice. Please enter a number between 1 and 5.")
+
+    # Close the connection
+    if conn.is_connected():
+        conn.close()
+        print("MySQL connection is closed")
+
+
+# Run the main function
+if __name__ == "__main__":
+    main()
+
+
+
+*******************************************************************************************************
+
+Some MySQL Command Client Server Commands:
+
+USE student_management;
+
+SHOW TABLES;
+
+SELECT * FROM students;
+
+exit; 
+
+********************************************************************************************************
+

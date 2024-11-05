@@ -1,0 +1,86 @@
+SET SERVEROUTPUT ON;
+
+***** To drop a table ******
+DROP TABLE employees;
+
+
+-- Step 1: Create the employees table for demonstration (if not already created)
+CREATE TABLE employees (
+    employee_id NUMBER PRIMARY KEY,
+    employee_name VARCHAR2(100)
+);
+
+-- Step 2: Insert sample data (if not already inserted)
+INSERT INTO employees (employee_id, employee_name) VALUES (1, 'John Doe');
+INSERT INTO employees (employee_id, employee_name) VALUES (2, 'Jane Smith');
+INSERT INTO employees (employee_id, employee_name) VALUES (3, 'Alice Johnson');
+INSERT INTO employees (employee_id, employee_name) VALUES (4, 'Bob Brown');
+COMMIT;
+
+-- Step 3: PL/SQL block using different types of cursors
+DECLARE
+    -- Implicit cursor variable for counting employees
+    v_employee_count NUMBER;
+
+    -- Explicit cursor declaration
+    CURSOR emp_cursor IS
+        SELECT employee_id, employee_name FROM employees;
+
+    -- Cursor FOR loop (implicitly declared cursor)
+    CURSOR emp_for_cursor IS
+        SELECT employee_id, employee_name FROM employees;
+
+    -- Parameterized cursor
+    CURSOR param_cursor(p_employee_id NUMBER) IS
+        SELECT employee_name FROM employees WHERE employee_id = p_employee_id;
+
+    -- Variables to hold cursor data
+    v_emp_id employees.employee_id%TYPE;
+    v_emp_name employees.employee_name%TYPE;
+
+BEGIN
+    -- Implicit cursor to count employees
+    SELECT COUNT(*) INTO v_employee_count FROM employees;
+    DBMS_OUTPUT.PUT_LINE('Total Employees: ' || v_employee_count);
+
+    -- Explicit cursor to fetch and display employees
+    OPEN emp_cursor;
+    LOOP
+        FETCH emp_cursor INTO v_emp_id, v_emp_name;
+        EXIT WHEN emp_cursor%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE('Employee ID: ' || v_emp_id || ', Name: ' || v_emp_name);
+    END LOOP;
+    CLOSE emp_cursor;
+
+    -- Cursor FOR loop to display employees
+    DBMS_OUTPUT.PUT_LINE('--- Using Cursor FOR Loop ---');
+    FOR emp IN emp_for_cursor LOOP
+        DBMS_OUTPUT.PUT_LINE('Employee ID: ' || emp.employee_id || ', Name: ' || emp.employee_name);
+    END LOOP;
+
+    -- Using parameterized cursor to fetch a specific employee
+    DECLARE
+        v_specific_employee_name employees.employee_name%TYPE;
+    BEGIN
+        OPEN param_cursor(2);  -- Fetching employee with ID = 2
+        FETCH param_cursor INTO v_specific_employee_name;
+        IF param_cursor%FOUND THEN
+            DBMS_OUTPUT.PUT_LINE('Employee Name for ID 2: ' || v_specific_employee_name);
+        ELSE
+            DBMS_OUTPUT.PUT_LINE('Employee not found for ID 2');
+        END IF;
+        CLOSE param_cursor;
+    END;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
+
+
+
+************************************************************************************************************
+
+DROP TABLE employees;
+

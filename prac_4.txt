@@ -1,0 +1,117 @@
+Perform this in sql plus for this u need to install oracle database 
+
+username: system 
+password: root 
+
+SET SERVEROUTPUT ON
+
+BEGIN
+   -- Declare variables
+   DECLARE
+      v_salary NUMBER := 3000;
+      v_bonus NUMBER;
+   
+   BEGIN
+      -- Control structure: IF-ELSE to calculate bonus
+      IF v_salary > 5000 THEN
+         v_bonus := v_salary * 0.10;   -- 10% bonus
+      ELSIF v_salary >= 3000 THEN
+         v_bonus := v_salary * 0.05;   -- 5% bonus
+      ELSE
+         v_bonus := v_salary * 0.02;   -- 2% bonus
+      END IF;
+      
+      -- Output the result
+      DBMS_OUTPUT.PUT_LINE('Calculated Bonus: ' || v_bonus);
+   
+   EXCEPTION
+      -- Exception handling: Catch errors if any
+      WHEN OTHERS THEN
+         DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+   END;
+END;
+/
+
+
+
+
+***
+***
+
+
+Step 5: Test Error Handling
+You can simulate an error in the PL/SQL block by dividing by zero, which will trigger the exception block:
+
+sql
+Copy code
+BEGIN
+   DECLARE
+      v_salary NUMBER := 3000;
+      v_bonus NUMBER;
+   BEGIN
+      -- Intentional error: Division by zero
+      v_bonus := v_salary / 0;
+      DBMS_OUTPUT.PUT_LINE('Calculated Bonus: ' || v_bonus);
+   EXCEPTION
+      WHEN OTHERS THEN
+         DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+   END;
+END;
+/
+
+*************************************************************************************************************************
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Mon Oct 23 10:00:00 2024
+Version 19.7.0.0.0
+
+Enter user-name: system 
+Enter password: root
+
+
+SQL> SET SERVEROUTPUT ON;
+
+SQL> DECLARE
+        v_employee_count NUMBER;
+        no_employees EXCEPTION;
+        PRAGMA EXCEPTION_INIT(no_employees, -20001);
+    
+    BEGIN
+        SELECT COUNT(*)
+        INTO v_employee_count
+        FROM employees;
+  
+      IF v_employee_count = 0 THEN
+           RAISE no_employees;
+      ELSE
+           FOR emp IN (SELECT employee_id FROM employees) LOOP
+             DBMS_OUTPUT.PUT_LINE('Employee ID: ' || emp.employee_id);
+          END LOOP;
+      END IF;
+   
+  EXCEPTION
+      WHEN no_employees THEN
+           DBMS_OUTPUT.PUT_LINE('No employees found in the database.');
+      WHEN OTHERS THEN
+           DBMS_OUTPUT.PUT_LINE('An unexpected error occurred: ' || SQLERRM);
+   END;
+  /
+
+No employees found in the database.
+
+PL/SQL procedure successfully completed.
+
+
+IF there is no table found use this code
+
+CREATE TABLE employees (
+   employee_id NUMBER PRIMARY KEY,
+   first_name VARCHAR2(50),
+   last_name VARCHAR2(50),
+   salary NUMBER,
+   hire_date DATE
+);
+
+
+SQL>
+
+

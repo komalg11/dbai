@@ -1,0 +1,114 @@
+1. Types of JOIN
+
+1.1 INNER JOIN
+
+Returns records that have matching values in both tables.
+
+SELECT Employees.EmployeeID, Employees.FirstName, Departments.DepartmentName
+FROM Employees
+INNER JOIN Departments ON Employees.DepartmentID = Departments.DepartmentID;
+
+1.2 LEFT JOIN (or LEFT OUTER JOIN)
+
+Returns all records from the left table, and the matched records from the right table. If there is no match, the result is NULL on the right side.
+
+SELECT Employees.EmployeeID, Employees.FirstName, Departments.DepartmentName
+FROM Employees
+LEFT JOIN Departments ON Employees.DepartmentID = Departments.DepartmentID;
+
+1.3 RIGHT JOIN (or RIGHT OUTER JOIN)
+
+Returns all records from the right table, and the matched records from the left table. If there is no match, the result is NULL on the left side.
+
+SELECT Employees.EmployeeID, Employees.FirstName, Departments.DepartmentName
+FROM Employees
+RIGHT JOIN Departments ON Employees.DepartmentID = Departments.DepartmentID;
+
+1.4 FULL OUTER JOIN
+
+Returns all records when there is a match in either left or right table. If there is no match, the result is NULL on the side that does not have a match.
+
+SELECT Employees.EmployeeID, Employees.FirstName, Departments.DepartmentName
+FROM Employees
+FULL OUTER JOIN Departments ON Employees.DepartmentID = Departments.DepartmentID;
+
+1.5 CROSS JOIN
+
+Returns the Cartesian product of the two tables. Each row from the first table is combined with each row of the second table.
+
+SELECT Employees.EmployeeID, Departments.DepartmentName
+FROM Employees
+CROSS JOIN Departments;
+
+1.6 SELF JOIN
+
+A self join is when a table is joined with itself.
+
+SELECT A.FirstName AS Employee, B.FirstName AS Manager
+FROM Employees A
+INNER JOIN Employees B ON A.ManagerID = B.EmployeeID;
+
+2. Sub-Queries
+
+2.1 Subquery in SELECT Clause
+Using a subquery to calculate the average salary in the main query:
+
+SELECT EmployeeID, FirstName, Salary,
+(SELECT AVG(Salary) FROM Employees) AS AvgSalary
+FROM Employees;
+
+2.2 Subquery in WHERE Clause
+
+Using a subquery to filter the main query's results:
+
+SELECT FirstName, LastName, Salary
+FROM Employees
+WHERE Salary > (SELECT AVG(Salary) FROM Employees);
+
+2.3 Subquery in FROM Clause (Derived Table)
+
+You can use a subquery as a temporary table within the FROM clause:
+
+SELECT Department, AvgSalary
+FROM (
+    SELECT Department, AVG(Salary) AS AvgSalary
+    FROM Employees
+    GROUP BY Department
+) AS DepartmentSalary;
+
+2.4 Correlated Subquery
+
+In a correlated subquery, the subquery depends on the outer query for its values:
+
+SELECT FirstName, Salary
+FROM Employees E1
+WHERE Salary > (SELECT AVG(Salary) FROM Employees E2 WHERE E1.DepartmentID = E2.DepartmentID);
+
+3. VIEW
+A VIEW is a virtual table based on the result-set of an SQL statement. It can encapsulate complex queries and simplify data access.
+
+3.1 Creating a View
+
+CREATE VIEW EmployeeDepartment AS
+SELECT Employees.EmployeeID, Employees.FirstName, Employees.LastName, Departments.DepartmentName
+FROM Employees
+INNER JOIN Departments ON Employees.DepartmentID = Departments.DepartmentID;
+
+3.2 Selecting from a View
+
+
+
+SELECT * FROM EmployeeDepartment;
+
+3.3 Updating a View
+
+UPDATE EmployeeDepartment
+SET DepartmentName = 'Marketing'
+WHERE EmployeeID = 102;
+
+3.4 Dropping a View
+
+You can drop a view if it’s no longer needed:
+
+
+DROP VIEW EmployeeDepartment;
