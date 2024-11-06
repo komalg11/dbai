@@ -184,6 +184,25 @@ pip install mysql-connector-python
 
 ***************************************
 
+CREATE TABLE students (
+    student_id INT PRIMARY KEY AUTO_INCREMENT,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    age INT,
+    grade CHAR(2),
+    email VARCHAR(100)
+);
+
+
+INSERT INTO students (first_name, last_name, age, grade, email) VALUES
+('John', 'Doe', 20, 'A', 'john.doe@example.com'),
+('Jane', 'Smith', 19, 'B', 'jane.smith@example.com'),
+('Alice', 'Johnson', 21, 'A', 'alice.johnson@example.com'),
+('Bob', 'Brown', 22, 'C', 'bob.brown@example.com'),
+('Charlie', 'Davis', 20, 'B', 'charlie.davis@example.com');
+
+***********************************************
+
 
 
 
