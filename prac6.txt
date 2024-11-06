@@ -175,3 +175,15 @@ exit;
 
 ********************************************************************************************************
 
+venv\Scripts\activate 
+path\to\your\venv\Scripts\activate
+
+to activate virtual environment
+
+pip install mysql-connector-python
+
+***************************************
+
+
+
+
